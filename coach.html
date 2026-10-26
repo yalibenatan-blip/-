@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>מאמן – האפליקציה שלא מרפה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f1ec;--card:#fff;--ink:#16181d;--mut:#6b6f78;--line:#e6e2da;--acc:#ff5a1f;--acc2:#12b886;--shadow:0 6px 24px rgba(20,20,30,.07);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#1a1d24;--ink:#f2f3f5;--mut:#9aa0ab;--line:#2a2e38;--shadow:none;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1115;--card:#1a1d24;--ink:#f2f3f5;--mut:#9aa0ab;--line:#2a2e38;--shadow:none;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Heebo,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+.wrap{max-width:520px;margin:auto;padding:18px 16px 110px}
+h1{font-size:28px;font-weight:900;margin:0}h2{font-size:20px;font-weight:800;margin:0 0 6px}
+small,.mut{color:var(--mut)}p{margin:0 0 10px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:7px 13px;font-weight:700;font-size:14px}
+.card{background:var(--card);border-radius:22px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.coach{background:linear-gradient(135deg,#ff4d12,#ff9a3c);color:#fff;border-radius:22px;padding:18px 20px;margin-bottom:14px}
+.coach b{font-size:12px;letter-spacing:.5px;opacity:.85}.coach p{margin:6px 0 0;font-size:19px;font-weight:700;line-height:1.35}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:15px;font:800 16px Heebo,system-ui;background:var(--acc);color:#fff;cursor:pointer;margin-top:6px}
+.btn.g{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+input{width:100%;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:14px;padding:13px 14px;font:600 16px Heebo,system-ui;margin:6px 0 12px;outline:0}input:focus{border-color:var(--acc)}
+.l{font-size:13px;font-weight:700;color:var(--mut)}
+.chips{display:flex;gap:8px;margin:6px 0 14px;flex-wrap:wrap}.ch{flex:1;min-width:90px;padding:13px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:700 15px Heebo,system-ui;cursor:pointer}.ch.sel{border-color:var(--acc);background:rgba(255,90,31,.12);color:var(--acc)}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.ringw{display:flex;align-items:center;gap:16px}
+.rb{fill:none;stroke:var(--line);stroke-width:12}.rf{fill:none;stroke:var(--acc);stroke-width:12;stroke-linecap:round}.rf.over{stroke:#e03131}
+.rn{font:900 28px Heebo,system-ui;fill:var(--ink)}.rt{font:600 12px Heebo,system-ui;fill:var(--mut)}
+.drops{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.dp{width:34px;height:40px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);font-size:18px;cursor:pointer;opacity:.45}.dp.on{opacity:1;background:rgba(18,184,134,.14);border-color:var(--acc2)}
+.chk{display:flex;gap:12px;align-items:center;padding:13px 4px;border-bottom:1px solid var(--line);cursor:pointer}.chk:last-child{border:0}
+.bx{width:26px;height:26px;border-radius:9px;border:2px solid var(--line);flex:none}.chk.on .bx{background:var(--acc2);border-color:var(--acc2);color:#fff;text-align:center;font-weight:900;line-height:22px}
+.chk.on b{text-decoration:line-through;opacity:.55}.chk small{display:block}
+.bar{height:10px;background:var(--line);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc);border-radius:9px}
+.tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));z-index:5}
+.tabs button{flex:1;border:0;background:none;color:var(--mut);font:700 11px Heebo,system-ui;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}.tabs button span{font-size:22px}.tabs button.on{color:var(--acc)}
+.wk{display:flex;gap:6px;margin-top:12px}.wk div{flex:1;text-align:center;padding:8px 0;border-radius:12px;background:var(--bg);font-size:12px;font-weight:700}.wk .now{background:var(--acc);color:#fff}
+.toast{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:99px;font-weight:700;z-index:9;font-size:14px;max-width:90%;text-align:center}
+.err{color:#e03131;font-weight:700;font-size:14px;margin:0 0 10px}
+.th{display:flex;gap:10px;overflow-x:auto}.th figure{margin:0;flex:none;text-align:center;font-size:12px}.th img{width:84px;height:110px;object-fit:cover;border-radius:12px;display:block}
+.stat{display:flex;gap:10px;margin-bottom:14px}.stat div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;text-align:center;font-size:13px;color:var(--mut)}.stat b{font-size:22px;display:block;color:var(--ink)}
+.fr{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.fr:last-child{border:0}.fr button{border:0;background:none;color:var(--mut);font-size:18px;cursor:pointer}
+.big{font-size:40px;font-weight:900;color:var(--acc)}
+.sl{display:flex;align-items:center;gap:10px;font-size:30px}.sl input{padding:0;border:0;background:none;margin:6px 0;accent-color:var(--acc)}
+.hero{background:linear-gradient(135deg,#1c1f2b,#2b2f45);color:#fff;border-radius:24px;padding:16px 18px;margin-bottom:14px;box-shadow:0 10px 30px rgba(255,90,31,.25)}
+.hr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.hr span{font:900 26px Heebo,system-ui;color:#ff8a3d}
+.segs{display:flex;gap:6px;margin-bottom:8px}.segs i{flex:1;height:10px;border-radius:6px;background:rgba(255,255,255,.14);overflow:hidden}.segs u{display:block;height:100%;background:linear-gradient(90deg,#ff5a1f,#ffb347);border-radius:6px;transition:width .4s;box-shadow:0 0 12px #ff8a3d}
+.hero small{color:rgba(255,255,255,.65)}
+.fw{background:var(--bg);border-radius:18px;padding:6px;margin:8px 0;color:var(--acc)}.fig{width:100%;height:150px;display:block}.gl{stroke:var(--line);stroke-width:2}
+.tip{font-size:14px}.goal{font-weight:800;text-align:center;margin:8px 0}
+.num{font:900 72px Heebo,system-ui;text-align:center;line-height:1;margin:6px 0 14px}.num small{font-size:24px;color:var(--mut)}
+.tap{height:92px;font-size:26px;border-radius:26px;box-shadow:0 8px 0 #c93d0a;transition:transform .08s;margin-bottom:12px}.tap:active{transform:translateY(5px);box-shadow:0 3px 0 #c93d0a}
+.ov{position:fixed;inset:0;background:rgba(10,10,15,.72);z-index:20;display:flex;align-items:flex-end;justify-content:center}.sheet{background:var(--card);border-radius:28px 28px 0 0;padding:22px 18px calc(18px + env(safe-area-inset-bottom,0px));width:100%;max-width:520px;max-height:100%;overflow:auto}
+.wheel{position:relative;display:flex;justify-content:center;align-items:center;gap:6px;margin:10px 0}.hl{position:absolute;left:15%;right:15%;top:50%;height:44px;margin-top:-22px;border-radius:12px;background:rgba(255,90,31,.16);pointer-events:none}
+.col{height:132px;overflow-y:auto;scroll-snap-type:y mandatory;padding:44px 0;width:90px;text-align:center;scrollbar-width:none}.col::-webkit-scrollbar{display:none}.col div{height:44px;line-height:44px;font-size:26px;font-weight:800;scroll-snap-align:center}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<nav class="tabs" id="tabs"></nav>
+<script>
+const $=s=>document.querySelector(s),KEY="coach_v1";
+let S=null,tab="home",step=0,P={g:"m",act:1.45},GAP=0,res=null,PH=null,msg="",err="",rst=0;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const pad=n=>String(n).padStart(2,"0");
+const dk=(d=new Date())=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const dn=k=>Math.round(new Date(k+"T12:00:00")/864e5);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const L=()=>(S.logs[dk()]=S.logs[dk()]||{w:0,f:[],x:[]});
+const LV=["מתחיל","בינוני","מתקדם"];
+const T={
+A:{n:"חזה, כתפיים וידיים",ex:[["שכיבות סמיכה",3,[6,12,20],"חזרות"],["דיפס על ספסל",3,[6,10,15],"חזרות"],["פייק פוש־אפ",3,[5,8,12],"חזרות"],["פלאנק",3,[20,40,60],"שניות"]]},
+B:{n:"יום בטן",ex:[["כפיפות בטן",4,[12,20,30],"חזרות"],["פלאנק",3,[20,40,60],"שניות"],["מטפס הרים",3,[20,30,45],"שניות"],["גשר ישבן",3,[12,18,25],"חזרות"]]},
+C:{n:"גוף מלא וקרדיו",ex:[["ג׳אמפינג ג׳ק",4,[30,45,60],"שניות"],["מטפס הרים",4,[20,30,45],"שניות"],["ברפי",3,[4,8,12],"חזרות"],["ריצה קלה או הליכה מהירה",1,[15,20,25],"דקות"]]},
+D:{n:"גינת כושר: מתח וגב",ex:[["מתח (מתחילים: ירידה איטית)",4,[2,5,8],"חזרות"],["חתירה הפוכה",3,[6,10,14],"חזרות"],["הרמת ברכיים במתח",3,[6,10,14],"חזרות"],["פלאנק צד",3,[15,30,45],"שניות לכל צד"]]},
+R:{n:"יום מנוחה פעילה",rest:1,ex:[]}};
+const WEEK=["A","B","C","R","D","B","R"],DAYS=["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"];
+const CH0=["15 שכיבות סמיכה ברצף","פלאנק דקה וחצי","30 שכיבות סמיכה ברצף","5 מתח ברצף","100 סקוואט בלי הפסקה","פלאנק 3 דקות","50 שכיבות סמיכה ברצף","10 מתח ברצף"];
+const QF=[["ביצה",70],["פרוסת לחם",80],["תפוח",95],["חזה עוף (100 גרם)",165],["אורז (כוס)",205],["שייק חלבון",150],["גבינה לבנה (כף)",25]];
+const wt=()=>T[WEEK[new Date().getDay()]];
+function calc(p){
+ const bmr=10*p.w+6.25*p.h-5*p.a+(p.g==="m"?5:-161),tdee=Math.round(bmr*p.act),fl=p.g==="m"?1500:1200,n=[],t=p.t;
+ let target=tdee,goal=p.w;
+ if(p.gt==="l"){target=Math.max(fl,Math.round(tdee*(1-(.08+.14*t))/10)*10);goal=Math.round((p.w-(tdee-target)*p.wk*7/7700)*10)/10;const mn=Math.ceil(19*(p.h/100)**2);if(goal<mn){goal=mn;n.push("עדכנתי את יעד המשקל כדי שיישאר בטווח בריא.")}}
+ if(p.gt==="m"){const g=p.wk*(.08+.1*t);target=tdee+Math.round(g/p.wk*1100/10)*10;goal=Math.round((p.w+g)*10)/10}
+ const pro=Math.round(p.w*(p.gt==="b"?1.4:1.8)),fat=Math.round(target*.27/9),carb=Math.max(0,Math.round((target-pro*4-fat*9)/4));
+ return{tdee,target,goal,weeks:p.wk,water:Math.ceil(p.w*.033/.25),pro,fat,carb,n}}
+function calc0(p){
+ const bmr=10*p.w+6.25*p.h-5*p.a+(p.g==="m"?5:-161),tdee=Math.round(bmr*p.act),fl=p.g==="m"?1500:1200,n=[];
+ let goal=p.goal;const mn=Math.ceil(18.5*(p.h/100)**2)+1;
+ if(goal<mn){goal=mn;n.push("משקל היעד שהזנת נמוך מדי לגובה שלך, אז עדכנתי אותו ל־"+goal+" ק״ג.")}
+ let target=tdee,weeks=0;
+ if(goal<p.w){
+  let def=Math.min((p.w-goal)*7700/(p.wk*7),1000,tdee*.25);
+  target=Math.max(fl,Math.round((tdee-def)/10)*10);
+  weeks=Math.ceil((p.w-goal)*7700/Math.max(tdee-target,100)/7);
+  if(weeks>p.wk)n.push("כדי לרדת בצורה בטוחה, הקצב הריאלי הוא כ־"+weeks+" שבועות ולא "+p.wk+".")}
+ return{tdee,target,goal,weeks,water:Math.ceil(p.w*.033/.25),n}}
+function streak(){let n=0,d=new Date();const a=k=>{const l=S.logs[k];return l&&(l.w||l.f.length||l.x.length||l.cw)};
+ if(!a(dk(d)))d.setDate(d.getDate()-1);while(a(dk(d))){n++;d.setDate(d.getDate()-1)}return n}
+const eaten=()=>L().f.reduce((a,f)=>a+f.k,0),mac=k=>L().f.reduce((a,f)=>a+(f[k]||0),0);
+function SL(v){$("#slv").textContent="כ־"+v+" שבועות"}
+function macros(){const c=S.c;return`<section class="card"><h2>חלבון, שומן ופחמימה</h2>${[["חלבון","p",c.pro,"#12b886"],["שומן","f",c.fat,"#f59f00"],["פחמימה","c",c.carb,"#4c6ef5"]].map(m=>{const v=Math.round(mac(m[1]));return`<div style="margin:10px 0"><div style="display:flex;justify-content:space-between"><b>${m[0]}</b><span class="mut">${v} / ${m[2]} גרם</span></div><div class="bar"><i style="width:${Math.min(100,v/m[2]*100)}%;background:${m[3]}"></i></div></div>`}).join("")}</section>`}
+const RC=[
+{n:"חביתת ירקות",k:280,p:18,f:20,c:6,d:"2 ביצים, פלפל, עגבנייה ותרד במחבת עם כפית שמן זית."},
+{n:"סלט טונה וקטניות",k:350,p:32,f:12,c:28,d:"טונה במים, חומוס או שעועית, מלפפון, עגבנייה, לימון ושמן זית."},
+{n:"חזה עוף, בטטה וברוקולי",k:480,p:45,f:10,c:48,d:"חזה עוף בתנור עם תבלינים, בטטה אפויה וברוקולי מאודה."},
+{n:"שקשוקה קלה",k:300,p:17,f:18,c:16,d:"עגבניות, פלפל ו־2 ביצים במחבת, בלי לחם או עם פרוסה אחת."},
+{n:"יוגורט, שיבולת שועל ופירות",k:320,p:20,f:7,c:45,d:"יוגורט חלבון, חצי כוס שיבולת שועל, פרי קצוץ וקינמון."},
+{n:"מרק עדשים",k:280,p:17,f:3,c:45,d:"עדשים כתומות, גזר, בצל וכמון. מבשלים 25 דקות ומטחינים."}];
+let busy=0;
+async function AI0(){const txt=$("#fd").value.trim();if(!txt||busy)return;
+ let sm=null;try{sm=await claude.use("sample")}catch(e){}
+ if(!sm)return toast("החישוב האוטומטי לא זמין כרגע. נסה מתכון מהרשימה.");
+ busy=1;render();$("#fd").value=txt;
+ try{const r=await sm.json(`אתה מאמן תזונה. חשב קלוריות ומאקרו משוערים, לפי מנות ישראליות רגילות אם לא צוין אחרת, לאוכל הבא: ${txt}. החזר JSON בלבד, בלי טקסט נוסף, בפורמט: {"items":[{"n":"שם הפריט בעברית","k":קלוריות,"p":חלבון בגרם,"f":שומן בגרם,"c":פחמימה בגרם}]}`);
+  const it=(r.items||[]).filter(x=>x&&x.k>0);if(!it.length)throw 0;
+  it.forEach(x=>L().f.push({n:String(x.n).slice(0,60),k:Math.round(x.k),p:Math.round(x.p||0),f:Math.round(x.f||0),c:Math.round(x.c||0)}));save();toast("נוספו "+it.length+" פריטים")}
+ catch(e){toast("לא הצלחתי לחשב. נסה לנסח אחרת.")}
+ busy=0;render()}
+function AR(i){const r=RC[i];L().f.push({n:r.n,k:r.k,p:r.p,f:r.f,c:r.c});save();toast("נוסף ליומן");render()}
+function coach(){
+ const l=L(),h=new Date().getHours(),t=wt(),n=esc(S.p.name),c=S.c,done=t.rest||l.x.length>=t.ex.length;
+ if(GAP>1&&!l.w&&!l.f.length&&!l.x.length)return`נעלמת ל־${GAP} ימים, ${n}. אין הסברים, יש חזרה. אימון אחד היום, ואנחנו ממשיכים.`;
+ if(done&&l.w>=c.water&&l.f.length)return"יום מושלם. אימון, מים ואוכל מתועדים. עכשיו לישון בזמן.";
+ if(eaten()>c.target)return`עברת את היעד ב־${eaten()-c.target} קלוריות. בלי דרמה, אבל מפה עד סוף היום רק מים.`;
+ if(!done&&h>=17)return`השעה ${pad(h)}:${pad(new Date().getMinutes())} והאימון עוד לא נעשה. עשרים דקות, עכשיו. אני לא זז מפה.`;
+ if(h>=14&&l.w<c.water/2)return`חצי יום עבר ושתית רק ${l.w} כוסות. קום ותשתה עכשיו.`;
+ if(h>=13&&!l.f.length)return"עדיין לא דיווחת על אוכל. מה שלא נרשם לא קרה, אז תרשום.";
+ return h<12?`בוקר טוב ${n}. היום: ${t.n}. אין ויכוחים.`:`ממשיכים, ${n}. עוד צעד קטן להיום.`}
+function toast(t){const e=document.createElement("div");e.className="toast";e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2800)}
+let MODE='',CWF=0;function go(t){clr();if(MODE=='c'&&!CWF)MODE='';tab=t;msg="";render();window.scrollTo(0,0)}
+function render(){
+ if(!S||S.fresh){$("#tabs").innerHTML="";$("#app").innerHTML=S?summary():onb();return}
+ $("#app").innerHTML={home,work,food,prog}[tab]()+(tab!='work'&&needSched()?ov():'');wheelInit();
+ $("#tabs").innerHTML=[["home","🏠","היום"],["work","💪","אימון"],["food","🍽️","אוכל"],["prog","📈","התקדמות"]].map(x=>`<button class="${tab==x[0]?"on":""}" onclick="go('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join("")}
+/* onboarding */
+const inp=(id,lb,ty="number")=>`<label class="l" for="${id}">${lb}</label><input id="${id}" type="${ty}" ${ty=="number"?'inputmode="decimal"':""} value="${P[id]??""}">`;
+const chips=(k,o)=>`<div class="chips">${o.map(x=>`<button class="ch ${P[k]==x[0]?"sel":""}" onclick='pc("${k}",${JSON.stringify(x[0])})'>${x[1]}</button>`).join("")}</div>`;
+function grab(){document.querySelectorAll("#app input").forEach(i=>P[i.id]=i.type=="number"?(i.value===""?"":+i.value):i.value)}
+function pc(k,v){grab();P[k]=v;render()}
+function onb(){
+ const s=[
+ `<h2>נעים להכיר</h2><p class="mut">כמה שאלות, והמאמן בונה לך תוכנית.</p>${inp("name","איך קוראים לך?","text")}<div class="l">מין (לחישוב קלוריות)</div>${chips("g",[["m","גבר"],["f","אישה"]])}${inp("a","גיל")}${inp("h","גובה בס״מ")}`,
+ `<h2>היעד</h2>${inp("w","משקל התחלתי (ק״ג)")}<div class="l">לאן אתה רוצה להגיע?</div>${chips("gt",[["l","לרדת במשקל"],["m","לבנות שריר"],["b","גוף מאוזן"]])}<div class="l">באיזה קצב?</div><div class="sl"><span>🐇</span><input id="wk" type="range" min="8" max="52" step="4" value="${P.wk||24}" oninput="SL(this.value)"><span>🐢</span></div><p id="slv" class="mut" style="text-align:center">כ־${P.wk||24} שבועות</p>`,
+ `<h2>איך נראה היום שלך?</h2><p class="mut">מחוץ לאימונים.</p>${chips("act",[[1.3,"יושב רוב היום"],[1.45,"קצת תנועה"],[1.6,"על הרגליים"]])}`,
+ `<h2>אימון ניסוי</h2><p class="mut">עכשיו מתאמנים. בצע כל תרגיל ברצף עד שאתה לא יכול יותר, נוח כשתי דקות בין תרגילים ורשום כמה הצלחת. אין מתח בבית? רשום 0. ככה המאמן יודע מאיפה מתחילים ולאן מתקדמים.</p>${inp("pu","שכיבות סמיכה (חזרות)")}${inp("pk","פלאנק (שניות)")}${inp("cr","כפיפות בטן (חזרות)")}${inp("sq","סקוואטים (חזרות)")}${inp("pl","מתח (חזרות)")}`];
+ return`<div style="padding-top:10px"><div class="bar" style="margin-bottom:22px"><i style="width:${(step+1)*34}%"></i></div>${s[step]}${err?`<p class="err">${err}</p>`:""}<div class="row">${step?`<button class="btn g" onclick="back()">חזרה</button>`:""}<button class="btn" onclick="nx()">${step==2?"בנה לי תוכנית":"המשך"}</button></div></div>`}
+function back(){grab();step--;err="";render()}
+function nx(){grab();err="";const r=(v,a,b)=>v!==""&&v>=a&&v<=b;
+ if(step==0&&!(P.name&&P.name.trim()&&r(P.a,16,90)&&r(P.h,120,230)))err="מלא שם, גיל (16 ומעלה) וגובה תקינים.";
+ if(step==1&&!(r(P.w,35,250)&&P.gt))err="מלא משקל תקין ובחר לאן אתה רוצה להגיע.";
+ if(err)return render();
+ if(step<2){step++;return render()}
+ const wk=+P.wk||24,p={name:P.name.trim(),g:P.g,a:P.a,h:P.h,w:P.w,gt:P.gt,wk,t:(52-wk)/44,act:P.act,pu:0,pl:0,sq:0,cr:0,pk:0,lvl:0};
+ 
+ S={p,c:calc(p),cyc:dk(),ci:0,test:1,v2:1,logs:{},wi:[{d:dk(),w:p.w}],last:dk(),fresh:1};save();render()}
+function summary(){const c=S.c,p=S.p;
+ return`<div style="padding-top:20px"><h1>התוכנית שלך, ${esc(p.name)}</h1><p class="mut">רמה: ${LV[p.lvl]}</p>
+ <div class="card"><div class="mut">יעד קלוריות יומי</div><div class="big">${c.target}</div><div class="mut">שריפה יומית משוערת: ${c.tdee}</div></div>
+ <div class="stat"><div><b>${c.pro}</b>גרם חלבון</div><div><b>${c.fat}</b>גרם שומן</div><div><b>${c.carb}</b>גרם פחמימה</div></div><div class="stat"><div><b>${c.water}</b>כוסות מים</div><div><b>${c.goal}</b>ק״ג בעוד כ־${c.weeks} שבועות</div></div><div class="card"><h2>האימון הראשון שלך</h2><p>מיד אחרי ההרשמה מתחילים באימון הראשון: חמישה תרגילים, כל אחד עד שאתה לא יכול יותר. לוחצים על הכפתור אחרי כל חזרה, ובסוף המאמן בונה לך תוכנית שמתאימה בדיוק אליך.</p></div><div class="card" style="display:none"><p class="mut">שכיבות ${p.pu} · פלאנק ${p.pk} שניות · בטן ${p.cr} · סקוואט ${p.sq} · מתח ${p.pl}</p><p>היעד לחודש הקרוב: ${Math.ceil(p.pu*1.3+1)} שכיבות, ${Math.ceil(p.sq*1.3+1)} סקוואטים ו־${Math.ceil(p.pk*1.3+5)} שניות פלאנק.</p></div>
+ <div class="card"><div class="mut">האתגר הראשון שלך</div><h2>${CH[S.ci%CH.length]}</h2><p class="mut">יש לך 30 יום. אם לא תצליח, הוא נשאר עוד חודש.</p></div>
+ ${c.n.map(x=>`<p class="err">${x}</p>`).join("")}
+ <p class="mut" style="font-size:12px">זו הערכה כללית ולא ייעוץ רפואי. אם יש לך מצב רפואי או פציעה, התייעץ עם רופא לפני שמתחילים.</p>
+ <button class="btn" onclick="delete S.fresh;tab='work';save();render()">התחל את האימון הראשון</button></div>`}
+/* home */
+function home(){
+ const c=S.c,l=L(),e=eaten(),t=wt(),left=c.target-e,R=54,C=2*Math.PI*R,pc=Math.min(1,e/c.target),day=Math.min(30,dn(dk())-dn(S.cyc)+1);
+ const g=new Date().getHours(),gr=g<12?"בוקר טוב":g<18?"צהריים טובים":"ערב טוב";
+ return`<header class="top"><div><small>${gr}</small><h1>${esc(S.p.name)}</h1></div><div class="pill">🔥 ${streak()} ימים</div></header>
+ ${S.test?`<section class="card"><h2>האימון הראשון שלך מחכה</h2><p class="mut">חמישה תרגילים עד כשל. ככה אני מכיר אותך.</p><button class="btn" onclick="go('work')">התחל</button></section>`:""}<section class="coach"><b>המאמן אומר</b><p>${coach()}</p></section>
+ <section class="card ringw"><svg viewBox="0 0 130 130" width="130" height="130"><circle cx="65" cy="65" r="${R}" class="rb"/><circle cx="65" cy="65" r="${R}" class="rf ${left<0?"over":""}" style="stroke-dasharray:${C*pc} ${C}" transform="rotate(-90 65 65)"/><text x="65" y="68" text-anchor="middle" class="rn">${Math.abs(left)}</text><text x="65" y="88" text-anchor="middle" class="rt">${left<0?"מעל היעד":"קלוריות נותרו"}</text></svg>
+ <div><h2>אוכל</h2><p class="mut">${e} מתוך ${c.target}</p><button class="btn g" onclick="go('food')">הוסף ארוחה</button></div></section>
+ ${macros()}<section class="card"><h2>מים · ${l.w}/${c.water} כוסות</h2><div class="drops">${Array.from({length:c.water},(_,i)=>`<button class="dp ${i<l.w?"on":""}" onclick="W(${i})">💧</button>`).join("")}</div></section>
+ <section class="card"><h2>${t.n}</h2>${t.rest?`<p class="mut">הליכה של 30 דקות ומתיחות. מנוחה גם היא חלק מהתוכנית.</p>`:`<div class="bar"><i style="width:${l.x.length/t.ex.length*100}%"></i></div><p class="mut" style="margin-top:8px">${l.x.length} מתוך ${t.ex.length} תרגילים</p>`}<button class="btn" onclick="go('work')">${t.rest?"לתוכנית השבוע":"לאימון"}</button></section>
+ <section class="card"><div style="display:flex;justify-content:space-between"><b>אתגר החודש: ${CH[S.ci%CH.length]}</b><span class="mut">יום ${day}/30</span></div><div class="bar" style="margin-top:10px"><i style="width:${day/30*100}%"></i></div></section>
+ <section class="card"><h2>תזכורות</h2><p class="mut">ההתראות האמיתיות מגיעות מהיומן: כל אימון שנקבע נכנס ליומן גוגל עם תזכורת, גם כשהאפליקציה סגורה.</p><button class="btn g" onclick="N()">נסה התראה</button></section>
+ <p style="text-align:center"><small onclick="RS()" style="cursor:pointer">${rst?"לחץ שוב כדי למחוק הכול":"איפוס נתונים"}</small></p>`}
+function W(i){const l=L();l.w=l.w==i+1?i:i+1;save();render()}
+async function N(){try{const r=await Notification.requestPermission();if(r=="granted"){new Notification("המאמן",{body:"ככה אני אזכיר לך. עכשיו לך להתאמן."});toast("התראות הופעלו")}else toast("הדפדפן חסם התראות")}catch(e){toast("ההתראות לא נתמכות כאן")}}
+function RS(){if(rst){try{localStorage.removeItem(KEY)}catch(e){}S=null;step=0;P={g:"m",act:1.45};rst=0}else{rst=1;setTimeout(()=>{rst=0},4000)}render()}
+/* workout */
+let cur=null,tm=null,rt=null;
+const PZ={
+push:[[116,48,105,52,60,70,106,71,106,88,38,79,15,88],[116,74,105,76,60,82,92,80,106,88,38,85,15,88]],
+plank:[[116,62,104,66,60,76,104,88,120,88,38,82,15,88],[116,64,104,68,60,77,104,88,120,88,38,82,15,88]],
+sq:[[62,18,62,28,58,56,74,36,88,36,60,76,60,92],[70,38,66,46,46,70,80,50,92,50,78,74,62,92]],
+lunge:[[70,16,70,28,70,56,72,42,72,58,70,74,70,92],[70,26,70,38,66,66,72,52,72,66,94,68,96,92]],
+bridge:[[18,82,30,84,70,86,46,86,60,86,92,62,106,88],[18,80,30,82,70,54,46,86,62,86,96,60,108,88]],
+crunch:[[20,80,32,84,80,86,36,74,28,80,100,62,118,86],[50,56,56,64,80,86,64,54,52,58,100,62,118,86]],
+jack:[[70,16,70,26,70,56,70,42,70,58,70,74,70,92],[70,10,70,20,70,52,82,12,90,0,82,72,96,92]],
+climb:[[116,54,105,58,64,68,106,72,106,88,40,78,16,88],[116,54,105,58,64,68,106,72,106,88,82,72,70,86]],
+pull:[[70,34,70,44,70,70,70,28,70,12,72,82,70,94],[70,8,70,18,70,44,82,22,70,12,72,56,70,68]]};
+const TIP={push:'גוף ישר כמו קרש. יורדים עד שהחזה כמעט נוגע ברצפה ודוחפים למעלה.',sq:'רגליים ברוחב כתפיים, ישבן אחורה ולמטה, ועולים בכוח.',lunge:'צעד גדול קדימה, ברך אחורית כמעט לרצפה, ומחליפים רגל.',bridge:'שוכבים על הגב, ברכיים כפופות, מרימים אגן עד קו ישר ומהדקים ישבן.',crunch:'גב תחתון צמוד לרצפה, מרימים כתפיים בעזרת הבטן ולא מושכים בצוואר.',jack:'קופצים ופותחים רגליים וידיים, וחוזרים. קצב קבוע.',climb:'מתחילים בשכיבת סמיכה ומביאים ברכיים לחזה לסירוגין, מהר.',pull:'אחיזה ברוחב כתפיים, מושכים עד שהסנטר מעל המוט ויורדים לאט.',plank:'גוף ישר מהראש עד העקבים, בטן מכווצת, לא מורידים אגן. נושמים.'};
+const TEST=[['שכיבות סמיכה','pu'],['פלאנק','pk'],['כפיפות בטן','cr'],['סקוואטים','sq'],['מתח','pl']];
+const PK=n=>/שכיבות|דיפס|פייק/.test(n)?'push':/פלאנק/.test(n)?'plank':/סקוואט/.test(n)?'sq':/מכרעים/.test(n)?'lunge':/גשר/.test(n)?'bridge':/כפיפות/.test(n)?'crunch':/אמפינג|ברפי|ריצה/.test(n)?'jack':/מטפס/.test(n)?'climb':'pull';
+const fm=s=>pad(Math.floor(s/60))+':'+pad(s%60);
+function fig(k){const a=PZ[k][0],b=PZ[k][1],d=p=>`M${p[2]} ${p[3]}L${p[4]} ${p[5]}M${p[2]} ${p[3]}L${p[6]} ${p[7]}L${p[8]} ${p[9]}M${p[4]} ${p[5]}L${p[10]} ${p[11]}L${p[12]} ${p[13]}`,y=k=='pull'?12:92,an=(n,v)=>`<animate attributeName='${n}' values='${v}' dur='2.4s' repeatCount='indefinite' calcMode='spline' keyTimes='0;.5;1' keySplines='.4 0 .6 1;.4 0 .6 1'/>`;
+ return `<svg viewBox='0 0 140 100' class='fig'><line x1='0' x2='140' y1='${y}' y2='${y}' class='gl'/><path d='${d(a)}' fill='none' stroke='currentColor' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'>${an('d',d(a)+';'+d(b)+';'+d(a))}</path><circle r='8' fill='currentColor' cx='${a[0]}' cy='${a[1]}'>${an('cx',a[0]+';'+b[0]+';'+a[0])}${an('cy',a[1]+';'+b[1]+';'+a[1])}</circle></svg>`}
+function exs(){if(MODE=='c')return cex();if(S.test)return TEST.map(x=>({n:x[0],f:x[1],fail:1,timer:x[1]=='pk',sets:1,unit:x[1]=='pk'?'שניות':'חזרות'}));
+ const lv=S.p.lvl;return wt().ex.map(e=>{const ti=/שניות|דקות/.test(e[3]),mn=/דקות/.test(e[3]);return{n:e[0],sets:e[1],timer:ti,lab:e[2][lv],tgt:e[2][lv]*(mn?60:1),unit:e[3]}})}
+function ses(){const E=exs(),l=L();if(cur&&cur.d==dk()&&cur.m===MODE&&(cur.fin||cur.n==E.length))return E;const i=MODE=='c'?0:E.findIndex((_,k)=>!(l.x||[]).includes(k));cur={d:dk(),m:MODE,n:E.length,i:i<0?E.length:i,s:0,r:0,rest:0,run:0,res:MODE=='c'?{}:S.tres||{}};return E}
+function clr(){clearInterval(tm);clearInterval(rt);if(cur){cur.run=0;cur.rest=0}}
+function bar(){const E=exs(),e=E[cur.i];if(!e)return;const fr=e.fail?0:Math.min(1,(cur.s+cur.r/e.tgt)/e.sets),u=$('#sg'+cur.i),h=$('.hr span');if(u)u.style.width=fr*100+'%';if(h)h.textContent=Math.round((cur.i+fr)/E.length*100)+'%'}
+function tap(d){const e=exs()[cur.i];cur.r=Math.max(0,cur.r+d);if(d>0&&navigator.vibrate)navigator.vibrate(25);if(!e.fail&&cur.r>=e.tgt)return sd();$('#big').innerHTML=cur.r+(e.fail?'':`<small> / ${e.tgt}</small>`);bar()}
+function ts(){const e=exs()[cur.i];if(cur.run){clearInterval(tm);cur.run=0;return render()}cur.run=1;tm=setInterval(()=>{cur.r++;$('#big').textContent=fm(cur.r);bar();if(!e.fail&&cur.r>=e.tgt)sd()},1000);render()}
+function rest(){rt=setInterval(()=>{cur.rest--;if(cur.rest<=0){clr();render()}else $('#big').textContent=cur.rest},1000);render()}
+function skip(){clr();render()}
+function sd(){const E=exs(),e=E[cur.i];clr();if(e.fail){cur.res[e.f]=cur.r;if(S.test)S.tres=cur.res}
+ if(!e.fail&&cur.s+1<e.sets){cur.s++;cur.r=0;cur.rest=45;return rest()}
+ const l=L();if(MODE=='c')l.cw=1;else(l.x=l.x||[]).push(cur.i);cur.i++;cur.s=0;cur.r=0;
+ if(cur.i>=E.length){fin();return render()}
+ cur.rest=S.test?90:40;save();rest()}
+function fin(){if(S.test){const p=S.p,r=cur.res,q=(v,a,b)=>v<a?0:v<b?1:2;p.pu=r.pu||0;p.pk=r.pk||0;p.cr=r.cr||0;p.sq=r.sq||0;p.pl=r.pl||0;const g=(q(p.pu,10,25)+q(p.pl,3,8)+q(p.sq,25,50)+q(p.pk,30,75)+q(p.cr,20,45))/5;p.lvl=g<.7?0:g<1.4?1:2;S.ci=[0,3,7][p.lvl];S.test=0;cur.fin={t:1}}else{if(MODE=='c'&&(cur.res.ca||0)>(S.cb||0))S.cb=cur.res.ca;cur.fin={t:0,ca:cur.res.ca}};save()}
+function fres(){if(cur.fin&&cur.fin.t){const p=S.p;return `<section class='card'><h2>סיימת את האימון הראשון</h2><p class='mut'>הרמה שלך: ${LV[p.lvl]}</p><div class='stat'><div><b>${p.pu}</b>שכיבות</div><div><b>${p.pk}</b>שניות פלאנק</div><div><b>${p.cr}</b>בטן</div></div><div class='stat'><div><b>${p.sq}</b>סקוואט</div><div><b>${p.pl}</b>מתח</div></div><p>היעד לחודש הקרוב: ${Math.ceil(p.pu*1.3+1)} שכיבות, ${Math.ceil(p.sq*1.3+1)} סקוואטים ו־${Math.ceil(p.pk*1.3+5)} שניות פלאנק. מכאן התוכנית מותאמת אליך.</p><button class='btn' onclick="go('home')">מעולה, ממשיכים</button></section>`}
+ return `<section class='card'><h2>האימון הושלם 🔥</h2><p>${MODE=='c'?'הניסיון שלך על האתגר: '+(cur.fin.ca||0)+' מתוך '+CHL[S.ci%CHL.length].t+(cur.fin.ca>=CHL[S.ci%CHL.length].t?'. עברת! בסוף החודש מסמנים הצלחה ופותחים אתגר חדש.':'. עוד קצת, ואתה שם.'):'כל הכבוד. מחר ממשיכים.'}</p><button class='btn' onclick="go('home')">חזרה למסך הראשי</button></section>`}
+function work(){
+ const t=wt();
+ if(cur&&cur.fin&&cur.d==dk()&&cur.m===MODE)return `<div class='hero'><div class='hr'><b>${cur.fin.t?'האימון הראשון':MODE=='c'?'אימון לאתגר':t.n}</b><span>100%</span></div><div class='segs'><i><u style='width:100%'></u></i></div></div>`+fres();
+ if(!S.test&&MODE!='c'&&t.rest)return `<header class='top'><h1>יום מנוחה</h1></header><section class='card'><h2>${t.n}</h2><p>הליכה של 30 דקות, מתיחות ושינה טובה. מחר חוזרים.</p></section>`;
+ const E=ses(),e=E[Math.min(cur.i,E.length-1)],fr=e.fail?0:Math.min(1,(cur.s+cur.r/e.tgt)/e.sets),pct=Math.round((cur.i+fr)/E.length*100);
+ const rib=`<div class='hero'><div class='hr'><b>${S.test?'אימון ראשון: כמה אתה באמת יכול':MODE=='c'?'אימון לאתגר':t.n}</b><span>${pct}%</span></div><div class='segs'>${E.map((_,k)=>`<i><u id='sg${k}' style='width:${k<cur.i?100:k==cur.i?fr*100:0}%'></u></i>`).join('')}</div><small>תרגיל ${cur.i+1} מתוך ${E.length}${S.test?' · '+TEST.map(x=>x[0]).join(', '):''}</small></div>`;
+ const k=PK(e.n),m=e.timer,big=cur.rest?cur.rest:m?fm(cur.r):cur.r;
+ const ctl=cur.rest?`<button class='btn g' onclick='skip()'>דלג על המנוחה</button>`:m?`<button class='btn tap' onclick='ts()'>${cur.run?'עצור':cur.r?'המשך':'התחל'}</button>${e.fail&&cur.r&&!cur.run?`<button class='btn g' onclick='sd()'>סיימתי, לא יכול יותר</button>`:''}`:`<button class='btn tap' onclick='tap(1)'>עלה ✔</button><div class='row'><button class='btn g' onclick='tap(-1)'>בטל חזרה</button>${e.fail?`<button class='btn g' onclick='sd()'>סיימתי, כשל</button>`:''}</div>`;
+ return rib+`<section class='card'><h2>${e.n}</h2><div class='fw'>${fig(k)}</div><p class='mut tip'>${TIP[k]}</p><div class='goal'>${cur.rest?'מנוחה. הבא בתור:':e.fail?(e.f=='pl'?'עד כשל. אין מוט מתח? פשוט לחץ סיימתי':'עד שאתה לא יכול יותר'):'סט '+(cur.s+1)+' מתוך '+e.sets+' · יעד '+e.lab+' '+e.unit}</div><div class='num' id='big'>${big}${!cur.rest&&!e.fail&&!m?`<small> / ${e.tgt}</small>`:''}</div>${ctl}</section>`}
+const tmr=()=>{const d=new Date();d.setDate(d.getDate()+1);return d};
+function needSched(){if(S.test||S.fresh)return false;const d=tmr();return WEEK[d.getDay()]!='R'&&!(S.sc&&S.sc[dk(d)])}
+function ov(){const d=tmr(),t=T[WEEK[d.getDay()]];return `<div class='ov'><div class='sheet'><small>מחר, יום ${DAYS[d.getDay()]}</small><h2>${t.n}</h2><p class='mut'>באיזו שעה אתה מתאמן מחר? בלי שעה אין אימון.</p><div class='wheel' dir='ltr'><div class='hl'></div><div class='col' id='wh'>${Array.from({length:24},(_,i)=>`<div>${pad(i)}</div>`).join('')}</div><b style='font-size:26px'>:</b><div class='col' id='wm'>${[0,15,30,45].map(i=>`<div>${pad(i)}</div>`).join('')}</div></div><button class='btn' onclick='SC(1)'>הוסף ליומן גוגל</button><button class='btn g' onclick='SC(0)'>שמור בלי יומן</button></div></div>`}
+function wheelInit(){const h=$('#wh');if(h){h.scrollTop=18*44;$('#wm').scrollTop=0}}
+function gcal(d,tm2,ttl){const [h,mi]=tm2.split(':').map(Number),f=x=>x.getFullYear()+pad(x.getMonth()+1)+pad(x.getDate())+'T'+pad(x.getHours())+pad(x.getMinutes())+'00',a=new Date(d);a.setHours(h,mi,0,0);const b=new Date(a.getTime()+45*6e4),u='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(ttl)+'&dates='+f(a)+'/'+f(b)+'&details='+encodeURIComponent('האימון שלך במאמן. בלי תירוצים.'),el=document.createElement('a');el.href=u;el.target='_blank';el.rel='noopener';document.body.appendChild(el);el.click();el.remove()}
+function SC(m){const h=Math.round($('#wh').scrollTop/44),mi=Math.round($('#wm').scrollTop/44)*15,tm2=pad(h)+':'+pad(mi),d=tmr();(S.sc=S.sc||{})[dk(d)]=tm2;save();if(m)gcal(d,tm2,'אימון: '+T[WEEK[d.getDay()]].n);toast('נקבע למחר ב־'+tm2);render()}
+const CHL=[
+{n:'10 שכיבות סמיכה ברצף',b:'שכיבות סמיכה',s:'פייק פוש־אפ',k:'r',t:10},
+{n:'פלאנק דקה',b:'פלאנק',s:'פלאנק צד',k:'t',t:60},
+{n:'30 סקוואטים ברצף',b:'סקוואטים',s:'מכרעים',k:'r',t:30},
+{n:'20 שכיבות סמיכה ברצף',b:'שכיבות סמיכה',s:'פייק פוש־אפ',k:'r',t:20},
+{n:'3 מתח ברצף',b:'מתח',s:'חתירה הפוכה',k:'r',t:3},
+{n:'40 כפיפות בטן ברצף',b:'כפיפות בטן',s:'גשר ישבן',k:'r',t:40},
+{n:'פלאנק 2 דקות',b:'פלאנק',s:'פלאנק צד',k:'t',t:120},
+{n:'30 שכיבות סמיכה ברצף',b:'שכיבות סמיכה',s:'פייק פוש־אפ',k:'r',t:30},
+{n:'6 מתח ברצף',b:'מתח',s:'חתירה הפוכה',k:'r',t:6},
+{n:'100 סקוואטים ברצף',b:'סקוואטים',s:'מכרעים',k:'r',t:100},
+{n:'50 שכיבות סמיכה ברצף',b:'שכיבות סמיכה',s:'פייק פוש־אפ',k:'r',t:50},
+{n:'10 מתח ברצף',b:'מתח',s:'חתירה הפוכה',k:'r',t:10}];
+const CH=CHL.map(c=>c.n);
+let mapOpen=0;
+function cex(){const c=CHL[S.ci%CHL.length],t=c.k=='t',tt=c.t,h=x=>Math.max(t?15:1,Math.ceil(tt*x)),u=t?'שניות':'חזרות';
+ return[{n:c.b,sets:3,timer:t,lab:h(.5),tgt:h(.5),unit:u},{n:c.s,sets:3,timer:t,lab:h(.35),tgt:h(.35),unit:u},{n:c.b+' · ניסיון על האתגר',f:'ca',fail:1,sets:1,timer:t,unit:u}]}
+function cw(){MODE='c';cur=null;CWF=1;go('work');CWF=0}
+function chx(){const c=CHL[S.ci%CHL.length],best=S.cb||0,u=c.k=='t'?'שניות':'חזרות';
+ return `<div class='big' style='font-size:24px'>${c.n}</div><div class='fw'>${fig(PK(c.b))}</div>${best?`<p class='mut'>השיא שלך עד עכשיו: ${best} ${u} מתוך ${c.t}</p>`:''}<div class='row'><button class='btn' onclick='cw()'>אימון לאתגר</button><button class='btn g' onclick='mapOpen=!mapOpen;render()'>${mapOpen?'סגור מפה':'מפת האתגרים'}</button></div>${mapOpen?cmap():''}`}
+function mt(i){toast((i<S.ci?'הושלם: ':i==S.ci?'האתגר הנוכחי: ':'נעול: ')+CHL[i].n)}
+function cmap(){const n=CHL.length,X=i=>150+85*Math.sin(i*1.1),Y=i=>40+i*66,pts=CHL.map((_,i)=>X(i)+','+Y(i)).join(' ');
+ return `<svg viewBox='0 0 300 ${Y(n-1)+50}' width='100%' style='margin-top:12px'><polyline points='${pts}' fill='none' stroke='var(--line)' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/>${CHL.map((c,i)=>{const x=X(i),y=Y(i),d=i<S.ci,cu=i==S.ci,lx=x>150?x-32:x+32,an=x>150?'start':'end';return `<g onclick='mt(${i})' style='cursor:pointer'><circle cx='${x}' cy='${y}' r='22' fill='${d?'var(--acc)':cu?'var(--card)':'var(--line)'}' stroke='${cu||d?'var(--acc)':'none'}' stroke-width='4'>${cu?`<animate attributeName='r' values='22;26;22' dur='1.6s' repeatCount='indefinite'/>`:''}</circle><text x='${x}' y='${y+6}' text-anchor='middle' font-size='18' font-weight='900' fill='${d?'#fff':'var(--mut)'}'>${d?'✓':i+1}</text><text x='${lx}' y='${y+4}' text-anchor='${an}' font-size='11' font-weight='700' fill='var(--ink)'>${c.n}</text></g>`}).join('')}</svg>`}
+/*DBSTART*/
+const FD=`
+ביצה|ביצה,ביצים|143|12.6|9.5|0.7|יח:50
+ביצה קשה|ביצה קשה,ביצים קשות,קשה|155|13|11|1.1|יח:50
+חביתה|חביתה,אומלט,ביצים מקושקשות,מקושקשת|154|11|12|1|מנה:110
+חלבון ביצה|חלבון ביצה,חלבונים|52|11|0.2|0.7|יח:33
+חלב|חלב|61|3.2|3.3|4.8|כוס:240,כף:15
+חלב דל שומן|חלב דל שומן,חלב קל,חלב רזה|42|3.4|1|5|כוס:240,כף:15
+חלב סויה|חלב סויה|45|3.3|1.8|2.5|כוס:240,כף:15
+חלב שקדים|חלב שקדים|17|0.6|1.1|0.7|כוס:240,כף:15
+שוקו|שוקו|75|3.2|2|11|כוס:240
+יוגורט|יוגורט,יוגורט טבעי|61|3.5|3.3|4.7|גביע:200,כף:15
+יוגורט יווני|יוגורט יווני,יווני|97|9|5|4|גביע:150,כף:15
+יוגורט פירות|יוגורט פירות,יוגורט תות,יוגורט בטעם|95|3.5|2.5|15|גביע:200
+יוגורט חלבון|יוגורט חלבון,מעדן חלבון|65|10|1|4.5|גביע:200
+מעדן|מעדן,דנונה,מילקי|120|3.3|3.5|18|גביע:150
+קוטג׳|קוטג,קוטג׳|98|11|4.3|3.4|גביע:250,כף:30
+גבינה לבנה|גבינה לבנה,לבנה|110|9|5|3.5|כף:25,גביע:250
+גבינה צהובה|גבינה,גבינה צהובה,צהובה,גאודה,עמק|350|25|27|1.5|פרוסה:20
+גבינת שמנת|גבינת שמנת|250|6|24|3|כף:20
+בולגרית|בולגרית,גבינה בולגרית|260|15|21|2|חתיכה:30
+פטה|פטה,גבינת פטה|264|14|21|4|חתיכה:30
+מוצרלה|מוצרלה|280|22|22|2|חתיכה:30
+גבינה מלוחה|צפתית,גבינה מלוחה,גבינת עזים|290|20|22|2|חתיכה:30
+שמנת מתוקה|שמנת מתוקה,שמנת לבישול,שמנת|340|2|36|3|כף:15
+שמנת חמוצה|שמנת חמוצה|190|3|18|4|כף:20
+לבן|לבן|60|3.5|3|4.5|גביע:200,כוס:240
+חמאה|חמאה|717|0.9|81|0.1|כף:14,כפית:5
+מרגרינה|מרגרינה|717|0.2|80|0.7|כף:14,כפית:5
+גלידה|גלידה|207|3.5|11|24|כדור:60
+לחם|לחם,לחם פרוס,לחם לבן,לחם טוסט,טוסט,טוסטים|265|9|3.2|49|פרוסה:30
+לחם מלא|לחם מלא,לחם שחור,לחם קל|247|13|3.4|41|פרוסה:35
+לחם דגנים|לחם דגנים,לחם שיפון,שיפון|250|9|3|45|פרוסה:35
+פיתה|פיתה|275|9|1.2|56|יח:90
+פיתה מלאה|פיתה מלאה|250|10|2|48|יח:90
+לחמניה|לחמניה,לחמנייה,לחמניות|285|9|3|54|יח:70
+בגט|בגט,באגט|270|9|1.5|55|חתיכה:60
+בייגלה|בייגלה|380|10|3|78|יח:30
+חלה|חלה|290|9|5|53|פרוסה:50
+לאפה|לאפה,טורטייה,טורטיה|290|8|7|49|יח:80
+קרקר|קרקר,קרקרים|430|9|10|72|יח:5
+פריכית|פריכית,פריכיות,פריכיה|387|8|3|79|יח:9
+בורקס|בורקס|350|7|22|32|יח:100
+קרואסון|קרואסון|406|8|21|46|יח:60
+פיצה|פיצה|266|11|10|33|משולש:110
+שיבולת שועל|שיבולת שועל,שיבולת,אוטס|379|13|7|67|כף:10,כוס:90,מנה:40
+דייסה|דייסה,דייסת שיבולת שועל,דייסת קואקר|70|2.5|1.5|12|קערה:250
+קורנפליקס|קורנפליקס,קורנפלקס,קורנפלייקס,דגני בוקר|375|7|1|84|קערה:40,כוס:30
+גרנולה|גרנולה,מוזלי|450|10|18|60|מנה:40,כף:15,כוס:100
+אורז|אורז,אורז לבן,אורז מבושל|130|2.7|0.3|28|מנה:150,כוס:160,כף:25
+אורז מלא|אורז מלא|123|2.7|1|26|מנה:150,כוס:160,כף:25
+פסטה|פסטה,ספגטי,מקרוני,פנה,אטריות|158|5.8|0.9|31|מנה:180,צלחת:250,כוס:140
+פתיתים|פתיתים|155|5|1|31|מנה:150,כוס:150
+קוסקוס|קוסקוס|112|3.8|0.2|23|מנה:150,כוס:157
+בורגול|בורגול|83|3|0.2|19|מנה:150,כוס:180
+קינואה|קינואה|120|4.4|1.9|21|מנה:150,כוס:185
+תפוח אדמה|תפוח אדמה,תפוא,תפוד,תפוחי אדמה|77|2|0.1|17|יח:170
+פירה|פירה,פירה תפוחי אדמה|90|2|3|14|מנה:150,כף:30
+צ׳יפס|צ'יפס,ציפס,תפוחי אדמה מטוגנים|312|3.4|15|41|מנה:150
+בטטה|בטטה|86|1.6|0.1|20|יח:200
+תירס|תירס|96|3.4|1.5|21|יח:150,כף:12
+פופקורן|פופקורן|387|13|4.5|78|מנה:30
+עוף|עוף,עוף בתנור,עוף צלוי|200|27|9|0|מנה:150
+חזה עוף|חזה עוף,חזה|165|31|3.6|0|מנה:150
+שוק עוף|שוק עוף,ירך עוף,כרעיים,שוק|190|26|9|0|יח:120
+כנפיים|כנפיים,כנף|230|20|16|0|יח:35
+שניצל|שניצל,שניצלים|250|17|14|14|יח:100
+נקניקיה|נקניקיה,נקניק|250|12|22|2|יח:50
+פסטרמה|פסטרמה|110|20|3|1|פרוסה:15
+הודו|הודו,חזה הודו,נקניק הודו|135|29|1.5|0|מנה:120
+בשר טחון|בשר טחון,בקר טחון,טחון|250|26|17|0|מנה:120
+סטייק|סטייק,אנטריקוט,צלי,בשר|250|26|16|0|מנה:200
+קבב|קבב|250|18|19|3|יח:60
+קציצות|קציצה,קציצות,כדורי בשר|230|15|15|8|יח:50
+המבורגר|המבורגר,בורגר|254|17|18|3|יח:100
+שווארמה|שווארמה|200|22|11|3|מנה:150
+טונה|טונה|116|26|1|0|קופסה:140,כף:15
+סלמון|סלמון|208|20|13|0|מנה:150
+דג|דג,דג אפוי,דגים,פילה,לוקוס,דניס,אמנון|130|22|4|0|מנה:150
+סרדינים|סרדין,סרדינים|208|25|11|0|קופסה:90
+טופו|טופו|76|8|4.8|1.9|מנה:100
+חומוס|חומוס,חומוס מוכן,סלט חומוס|166|8|10|14|מנה:100,כף:20,צלחת:200
+גרגרי חומוס|גרגרי חומוס,חומוס מבושל,חומוס שלם|164|9|2.6|27|כוס:164,כף:15
+עדשים|עדשים|116|9|0.4|20|מנה:150,כוס:200
+שעועית|שעועית,שעועית לבנה,שעועית אדומה|127|8.7|0.5|23|מנה:150,כוס:180
+טחינה|טחינה|595|17|54|21|כף:15,כפית:5
+חמאת בוטנים|חמאת בוטנים,ממרח בוטנים|588|25|50|20|כף:16
+בוטנים|בוטנים,בוטן|567|26|49|16|חופן:30,כף:10
+שקדים|שקדים,שקד|579|21|50|22|חופן:30
+אגוזי מלך|אגוזי מלך,אגוז מלך,אגוזים|654|15|65|14|חופן:30
+קשיו|קשיו|553|18|44|30|חופן:30
+פיסטוק|פיסטוק|560|20|45|28|חופן:30
+גרעינים|גרעינים,גרעיני חמניות,גרעיני דלעת|584|21|51|20|כף:10,חופן:30
+זרעי צ׳יה|ציה,זרעי ציה,זרעי פשתן|486|17|31|42|כף:12
+תפוח|תפוח,תפוחים|52|0.3|0.2|14|יח:180
+בננה|בננה,בננות|89|1.1|0.3|23|יח:120
+תפוז|תפוז,תפוזים|47|0.9|0.1|12|יח:180
+קלמנטינה|קלמנטינה,מנדרינה,קלמנטינות|53|0.8|0.3|13|יח:70
+אשכולית|אשכולית|42|0.8|0.1|11|יח:250
+אגס|אגס|57|0.4|0.1|15|יח:180
+אפרסק|אפרסק,נקטרינה|39|0.9|0.3|10|יח:150
+משמש|משמש|48|1.4|0.4|11|יח:35
+שזיף|שזיף|46|0.7|0.3|11|יח:60
+ענבים|ענבים|69|0.7|0.2|18|חופן:80,אשכול:150
+תות|תות,תותים,תות שדה|32|0.7|0.3|8|כוס:150,יח:15
+אבטיח|אבטיח|30|0.6|0.2|8|פרוסה:300,כוס:150
+מלון|מלון|34|0.8|0.2|8|פרוסה:200,כוס:160
+אבוקדו|אבוקדו|160|2|15|9|יח:150
+תמרים|תמר,תמרים|277|1.8|0.2|75|יח:24
+צימוקים|צימוקים|299|3|0.5|79|חופן:30,כף:10
+פירות יבשים|פירות יבשים,מיובש|290|3|0.5|75|חופן:30
+רימון|רימון|83|1.7|1.2|19|יח:280
+קיווי|קיווי|61|1.1|0.5|15|יח:75
+מנגו|מנגו|60|0.8|0.4|15|יח:200
+אננס|אננס|50|0.5|0.1|13|פרוסה:80,כוס:165
+תאנה|תאנה,תאנים|74|0.8|0.3|19|יח:50
+דובדבנים|דובדבנים,דובדבן|63|1|0.2|16|חופן:60,כוס:140
+פירות יער|אוכמניות,פירות יער,פטל|57|0.7|0.3|14|כוס:140
+עגבנייה|עגבנייה,עגבניה,עגבניות,עגבנית|18|0.9|0.2|3.9|יח:120
+עגבניות שרי|עגבניות שרי,עגבניה שרי,שרי|18|0.9|0.2|3.9|יח:15,כוס:150
+מלפפון|מלפפון,מלפפונים|15|0.7|0.1|3.6|יח:120
+גזר|גזר|41|0.9|0.2|10|יח:70
+פלפל|פלפל,פלפלים,פלפל אדום,פלפל צהוב,פלפל ירוק|31|1|0.3|6|יח:150
+חסה|חסה|15|1.4|0.2|2.9|כוס:50,עלה:10
+כרוב|כרוב,כרוב לבן,כרוב סגול|25|1.3|0.1|6|כוס:90
+בצל|בצל,בצלים|40|1.1|0.1|9|יח:110
+שום|שום|149|6.4|0.5|33|שן:3
+ברוקולי|ברוקולי|34|2.8|0.4|7|מנה:150,כוס:90
+כרובית|כרובית|25|1.9|0.3|5|מנה:150,כוס:100
+קישוא|קישוא,זוקיני,קישואים|17|1.2|0.3|3.1|יח:200
+חציל|חציל,חצילים|25|1|0.2|6|יח:300
+פטריות|פטריות,פטריה,שמפיניון|22|3.1|0.3|3.3|כוס:70,יח:18
+תרד|תרד|23|2.9|0.4|3.6|מנה:100,כוס:30
+סלק|סלק|43|1.6|0.2|10|יח:130
+דלעת|דלעת|26|1|0.1|6.5|מנה:150
+סלט|סלט,סלט ירקות,סלט ישראלי,סלט קצוץ|25|1|0.3|5|קערה:250,מנה:200
+זיתים|זיתים,זית|115|0.8|11|6|יח:4,חופן:30
+חמוצים|חמוצים,מלפפון חמוץ,חמוץ,מלפפונים חמוצים|11|0.3|0.2|2.3|יח:35
+קטשופ|קטשופ|100|1|0.1|25|כף:17
+מיונז|מיונז|680|1|75|0.6|כף:14
+חרדל|חרדל|66|4|4|6|כפית:5
+רוטב סויה|סויה,רוטב סויה|53|8|0.6|5|כף:15
+שמן זית|שמן זית,שמן,שמן קנולה|884|0|100|0|כף:14,כפית:5
+סוכר|סוכר|387|0|0|100|כפית:5,כף:12
+דבש|דבש|304|0.3|0|82|כפית:7,כף:21
+ריבה|ריבה|250|0.4|0.1|63|כפית:7,כף:20
+נוטלה|נוטלה,ממרח שוקולד,שוקולד מרוח|539|6|31|58|כף:18,כפית:6
+שוקולד|שוקולד,שוקולד מריר,שוקולד חלב,פרלין|535|7|30|58|שורה:15,קוביה:5
+עוגייה|עוגייה,עוגיה,עוגיות,עוגייות|480|5|22|66|יח:12
+עוגה|עוגה,עוגת,עוגת שוקולד,עוגת גבינה|350|5|15|50|פרוסה:80
+סופגנייה|סופגנייה,סופגניה,סופגניות,דונאט|350|5|18|43|יח:90
+פנקייק|פנקייק,פנקייקים,לביבות,לביבה|227|6|9|28|יח:60
+חטיף אנרגיה|חטיף אנרגיה,חטיף,חטיף חלבון,חטיף דגנים|400|8|12|65|יח:40
+במבה|במבה|540|15|30|47|שקית:25,חופן:15
+ביסלי|ביסלי,חטיף מלוח,דוריטוס,ציטוס,תפוציפס|520|7|25|65|שקית:30,חופן:15
+קפה|קפה,קפה שחור,נס קפה,נס,אספרסו,קפה נמס|2|0.1|0|0|כוס:240
+קפה הפוך|קפה הפוך,הפוך,לאטה,קפוצינו|45|2.5|2.3|3.5|כוס:240
+תה|תה,תה ירוק,תה נענע|1|0|0|0|כוס:240
+מים|מים,מים מינרלים,סודה|0|0|0|0|כוס:240
+מיץ|מיץ,מיץ תפוזים,מיץ תפוחים,מיץ גזר,מיץ טבעי|45|0.7|0.2|10|כוס:240
+קולה|קולה,משקה קל,פפסי,ספרייט,פאנטה,משקה מוגז|42|0|0|10.6|כוס:240,פחית:330,בקבוק:500
+קולה זירו|קולה זירו,זירו,דיאט,קולה דיאט,פפסי מקס|0.3|0|0|0|פחית:330,כוס:240,בקבוק:500
+בירה|בירה|43|0.5|0|3.6|כוס:240,בקבוק:330,פחית:330
+יין|יין,יין אדום,יין לבן|83|0.1|0|2.6|כוס:150
+אבקת חלבון|אבקת חלבון,אבקה|380|75|6|8|סקופ:30,כף:10
+שייק חלבון|שייק חלבון,שייק|70|7|2|6|כוס:300
+פלאפל|פלאפל,כדורי פלאפל|333|13|18|32|כדור:17,מנה:100
+שקשוקה|שקשוקה|110|6|8|5|מנה:250
+מג׳דרה|מגדרה,מג'דרה|140|5|3|23|מנה:250
+קובה|קובה|230|9|13|18|יח:90
+סביח|סביח|220|8|12|20|מנה:300
+ג׳חנון|גחנון,ג'חנון,מלאוח,מלוואח|330|8|13|45|יח:200
+מרק|מרק,מרק עוף,מרק ירקות|35|2|1.5|3|קערה:300,כוס:240
+סושי|סושי,רול,רולים|150|5|1|30|יח:30
+`.trim().split('\n').map(l=>{const a=l.split('|'),u={};(a[6]||'מנה:100').split(',').forEach(x=>{const [k,v]=x.split(':');u[k]=+v});return{n:a[0],s:(a[1]||a[0]).split(',').concat([a[0]]),k:+a[2],p:+a[3],f:+a[4],c:+a[5],u,d:Object.keys(u)[0]}});
+const cl=s=>s.replace(/[׳'’"״`]/g,'').toLowerCase();
+const stem=w=>{if(w.length>4&&/(ים|ות)$/.test(w))return w.slice(0,-2);if(w.length>3&&/[הת]$/.test(w))return w.slice(0,-1);return w};
+const toks=s=>cl(s).replace(/½/g,' 0.5 ').replace(/(\d)([א-ת])/g,'$1 $2').split(/[^א-תa-z0-9.]+/).map(t=>t.replace(/^\.+|\.+$/g,'')).filter(Boolean);
+const IX=[];FD.forEach(f=>f.s.forEach(s=>IX.push({f,w:toks(s).map(stem)})));
+const NW={חצי:.5,רבע:.25,שליש:.33,אחד:1,אחת:1,שני:2,שתי:2,שניים:2,שתיים:2,שלוש:3,שלושה:3,ארבע:4,ארבעה:4,חמש:5,חמישה:5,שש:6,שישה:6,שבע:7,שבעה:7,שמונה:8,תשע:9,תשעה:9,עשר:10,עשרה:10};
+NW['חצי']=.5;
+const UN={גרם:'g',גר:'g',גרמים:'g',כוס:'כוס',כוסות:'כוס',כוסית:'כוס',כף:'כף',כפות:'כף',כפית:'כפית',כפיות:'כפית',פרוסה:'פרוסה',פרוסות:'פרוסה',פרוסת:'פרוסה',יחידה:'יח',יחידות:'יח',חתיכה:'חתיכה',חתיכות:'חתיכה',חתיכת:'חתיכה',מנה:'מנה',מנות:'מנה',צלחת:'צלחת',קערה:'קערה',גביע:'גביע',חופן:'חופן',קופסה:'קופסה',שקית:'שקית',פחית:'פחית',בקבוק:'בקבוק',כדור:'כדור',כדורים:'כדור',משולש:'משולש',משולשים:'משולש',קוביה:'קוביה',קוביות:'קוביה',שורה:'שורה',עלה:'עלה',עלים:'עלה',שן:'שן',שיני:'שן',סקופ:'סקופ',סקופים:'סקופ',אשכול:'אשכול'};
+function fnd(ts){const vs=ts.map(t=>{const a=[stem(t)];if(/^[והבלמש]/.test(t)&&t.length>3)a.push(stem(t.slice(1)));return a});let best=null;
+ for(const e of IX){const used=[];let ok=true;for(const w of e.w){const i=vs.findIndex((a,j)=>!used.includes(j)&&a.includes(w));if(i<0){ok=false;break}used.push(i)}
+  if(ok){const sc=e.w.length*10+e.w.join('').length;if(!best||sc>best.sc)best={f:e.f,sc,used}}}return best}
+function gr(f,q,u,w){const U=f.u;if(u=='g')return q||U[f.d];if(q==null&&!u&&w&&/חלב|גבינ|חמאה|שמנת|מרגרינה|טחינה|ממרח|ריבה|דבש|סוכר|קטשופ|מיונז|חרדל|לבנה|קוטג|שוקולד|נוטלה/.test(f.n))return U['כף']?U['כף']*2:U[f.d]*.5;const n=q==null?1:q,dn=f.k>150;
+ if(u&&U[u])return n*U[u];if(u=='כוס')return n*(dn?120:240);if(u=='כף')return n*(dn?10:15);if(u=='כפית')return n*(dn?4:5);return n*U[f.d]}
+function seg(txt,w){const ts=toks(txt),b=fnd(ts);if(!b)return{miss:txt.trim()};let q=null,u=null;
+ ts.forEach((t,j)=>{if(b.used.includes(j))return;if(t=='וחצי'){q=(q==null?1:q)+.5;return}const t2=t.length>3?t.replace(/^ו/,''):t;
+  if(/^\d+(\.\d+)?$/.test(t))q=(q||0)+ +t;else if(NW[t]!=null)q=(q||0)+NW[t];else if(NW[t2]!=null)q=(q||0)+NW[t2];else if(UN[t])u=UN[t];else if(UN[t2])u=UN[t2]});
+ if(u&&u!='g'&&q==null)q=1;return{f:b.f,g:gr(b.f,q,u,w)}}
+function parse(txt){const it=[],miss=[];cl(txt).replace(/\s+ו-/g,', ').split(/\s*[,;\n+]\s*/).forEach(ch=>ch.split(/\s+ו?עם\s+/).forEach((p,i)=>p.split(/\s+(?=ו(?!חצי)[א-ת]{3,})/).forEach((s,j)=>{if(!s.trim())return;const r=seg(s,i>0&&j==0);r.miss?miss.push(r.miss):it.push(r)})));return{it,miss}}
+/*DBEND*/
+let PV=null;const r1=v=>Math.round(v*10)/10;
+function AI(){const t=$('#fd').value.trim();if(!t)return;const r=parse(t);if(!r.it.length){toast('לא זיהיתי שום מאכל. נסה לכתוב בפשטות, למשל: 2 ביצים');PV=null}else PV=r;render()}
+function PG(i,v){PV.it[i].g=Math.max(0,+v||0);render()}
+function PX(i){PV.it.splice(i,1);if(!PV.it.length)PV=null;render()}
+function PA(){PV.it.forEach(x=>{const m=x.g/100;L().f.push({n:x.f.n+' · '+Math.round(x.g)+' גרם',k:Math.round(x.f.k*m),p:Math.round(x.f.p*m),f:Math.round(x.f.f*m),c:Math.round(x.f.c*m)})});PV=null;save();toast('נוסף ליומן');render()}
+function pvx(){if(!PV)return'';const t=PV.it.reduce((a,x)=>a+x.f.k*x.g/100,0);
+ return `<section class='card'><h2>זיהיתי</h2>${PV.it.map((x,i)=>`<div class='fr'><span><b>${x.f.n}</b><small style='display:block'>${Math.round(x.f.k*x.g/100)} קלוריות · חלבון ${r1(x.f.p*x.g/100)} · שומן ${r1(x.f.f*x.g/100)} · פחמימה ${r1(x.f.c*x.g/100)}</small></span><span style='display:flex;align-items:center;gap:6px'><input type='number' inputmode='decimal' value='${Math.round(x.g)}' style='width:80px;margin:0;padding:8px' onchange='PG(${i},this.value)'><small>גרם</small><button onclick='PX(${i})'>✕</button></span></div>`).join('')}${PV.miss.length?`<p class='err'>לא זיהיתי: ${esc(PV.miss.join(', '))}</p>`:''}<p style='margin-top:10px'><b>סה״כ ${Math.round(t)} קלוריות</b></p><button class='btn' onclick='PA()'>הוסף ליומן</button><button class='btn g' onclick='PV=null;render()'>בטל</button></section>`}
+function work0(){
+ const t=wt(),l=L(),lv=S.p.lvl,td=new Date().getDay();
+ const wk=`<div class="wk">${DAYS.map((d,i)=>`<div class="${i==td?"now":""}">${d}<br>${WEEK[i]=="R"?"מנוחה":WEEK[i]}</div>`).join("")}</div>`;
+ return`<header class="top"><h1>האימון של היום</h1></header>
+ <section class="card"><h2>${t.n}</h2><p class="mut">רמה: ${LV[lv]}${t.rest?"":" · 5 דקות חימום לפני, מתיחות אחרי"}</p>
+ ${t.rest?`<p>הליכה של 30 דקות, מתיחות, ושינה טובה. מחר חוזרים.</p>`:t.ex.map((e,i)=>`<div class="chk ${l.x.includes(i)?"on":""}" onclick="X(${i})"><span class="bx">${l.x.includes(i)?"✓":""}</span><div><b>${e[0]}</b><small>${e[1]>1?e[1]+"×":""}${e[2][lv]} ${e[3]}</small></div></div>`).join("")}</section>
+ <section class="card"><h2>השבוע שלך</h2>${wk}<p class="mut" style="margin-top:12px;font-size:13px">A חזה וידיים · B רגליים וליבה · C קרדיו · D גינת כושר</p></section>`}
+function X(i){const l=L(),k=l.x.indexOf(i);k<0?l.x.push(i):l.x.splice(k,1);save();render()}
+/* food */
+function food(){
+ const l=L(),c=S.c,e=eaten();
+ return`<header class="top"><h1>אוכל</h1><div class="pill">${e} / ${c.target}</div></header>${macros()}
+ <section class="card"><h2>מה אכלת?</h2><p class="mut">תתאר במילים שלך, והמאמן יחשב קלוריות, חלבון, שומן ופחמימה.</p><input id="fd" type="text" placeholder="למשל: 2 ביצים, פרוסת לחם עם גבינה וקפה עם חלב"><button class="btn" onclick="AI()">חשב</button></section>${pvx()}
+ <section class="card"><h2>מה אכלת היום</h2>${l.f.length?l.f.map((f,i)=>`<div class="fr"><span>${esc(f.n)}<small style="display:block">חלבון ${f.p||0} · שומן ${f.f||0} · פחמימה ${f.c||0}</small></span><span><b>${f.k}</b> <button onclick="DF(${i})">✕</button></span></div>`).join(""):`<p class="mut">עוד לא דיווחת כלום.</p>`}</section>
+ <section class="card"><h2>מתכונים בריאים</h2>${RC.map((r,i)=>`<div class="fr" style="align-items:flex-start;gap:10px"><div><b>${r.n}</b><small style="display:block">${r.k} קלוריות · חלבון ${r.p} · שומן ${r.f} · פחמימה ${r.c}</small><small style="display:block;margin-top:4px">${r.d}</small></div><button class="ch" style="flex:none;min-width:0;padding:8px 12px;font-size:13px" onclick="AR(${i})">הוסף</button></div>`).join("")}</section>`}
+function food0(){
+ const l=L(),c=S.c,e=eaten();
+ return`<header class="top"><h1>אוכל</h1><div class="pill">${e} / ${c.target}</div></header>
+ <section class="card"><h2>הוספה מהירה</h2><div class="chips">${QF.map((q,i)=>`<button class="ch" style="flex:none;min-width:0;padding:9px 12px" onclick="Q(${i})">${q[0]} · ${q[1]}</button>`).join("")}</div>
+ <label class="l" for="fn">או תרשום בעצמך</label><input id="fn" type="text" placeholder="מה אכלת?"><input id="fk" type="number" inputmode="numeric" placeholder="קלוריות"><button class="btn" onclick="F()">הוסף</button></section>
+ <section class="card"><h2>מה אכלת היום</h2>${l.f.length?l.f.map((f,i)=>`<div class="fr"><span>${esc(f.n)}</span><span><b>${f.k}</b> <button onclick="DF(${i})">✕</button></span></div>`).join(""):`<p class="mut">עוד לא דיווחת כלום.</p>`}</section>`}
+function Q(i){L().f.push({n:QF[i][0],k:QF[i][1]});save();render()}
+function F(){const n=$("#fn").value.trim(),k=+$("#fk").value;if(!n||!(k>0&&k<5000))return toast("מלא שם וקלוריות תקינות");L().f.push({n,k});save();render()}
+function DF(i){L().f.splice(i,1);save();render()}
+/* progress */
+function chart(){const w=S.wi.map(x=>x.w);
+ if(w.length<2)return`<p class="mut">אחרי המדידה החודשית הראשונה יופיע כאן הגרף.</p>`;
+ const all=[...w,S.c.goal],mn=Math.min(...all)-1,mx=Math.max(...all)+1,W=300,H=120,X=i=>10+i*(W-20)/(w.length-1),Y=v=>H-10-(v-mn)/(mx-mn)*(H-20);
+ return`<svg viewBox="0 0 ${W} ${H}" width="100%"><line x1="0" x2="${W}" y1="${Y(S.c.goal)}" y2="${Y(S.c.goal)}" stroke="var(--acc2)" stroke-dasharray="4 4"/><polyline fill="none" stroke="var(--acc)" stroke-width="3" points="${w.map((v,i)=>X(i)+","+Y(v)).join(" ")}"/>${w.map((v,i)=>`<circle cx="${X(i)}" cy="${Y(v)}" r="4" fill="var(--acc)"/>`).join("")}</svg>`}
+function prog(){
+ const day=dn(dk())-dn(S.cyc)+1,w=S.wi,cur=w[w.length-1].w,lost=Math.round((w[0].w-cur)*10)/10,ph=w.filter(x=>x.ph);
+ const form=day>=30?`<section class="card"><h2>יום המדידה הגיע</h2><p class="mut">עולים על המשקל, מצלמים, ובודקים את האתגר.</p>
+ <label class="l" for="mw">משקל היום (ק״ג)</label><input id="mw" type="number" inputmode="decimal">
+ <label class="l">תמונת התקדמות</label><input type="file" accept="image/*" onchange="PF(this)"><img id="pv" style="display:none;width:90px;border-radius:12px;margin-bottom:12px">
+ <div class="l">האתגר: ${CH[S.ci%CH.length]}</div><div class="chips"><button class="ch rb2" data-v="y" onclick="SR('y')">הצלחתי</button><button class="ch rb2" data-v="n" onclick="SR('n')">עוד לא</button></div>
+ ${err?`<p class="err">${err}</p>`:""}<button class="btn" onclick="M()">שמור מדידה</button></section>`:`<p class="mut">המדידה הבאה בעוד ${30-day} ימים.</p>`;
+ return`<header class="top"><h1>התקדמות</h1></header>${msg?`<section class="coach"><p>${msg}</p></section>`:""}
+ <div class="stat"><div><b>${cur}</b>ק״ג עכשיו</div><div><b>${lost>0?"−":""}${Math.abs(lost)}</b>שינוי מההתחלה</div><div><b>${S.c.goal}</b>ק״ג יעד</div></div>
+ <section class="card"><h2>אתגר החודש</h2>${chx()}<div class="bar" style="margin:12px 0 8px"><i style="width:${Math.min(1,day/30)*100}%"></i></div>
+ <p class="mut">יום ${Math.min(day,30)} מתוך 30. עוברים את האתגר, נפתח הבא. לא עוברים, הוא נשאר עוד חודש.</p>${form}</section>
+ <section class="card"><h2>משקל לאורך זמן</h2>${chart()}</section>
+ ${ph.length?`<section class="card"><h2>תמונות</h2><div class="th">${ph.map(x=>`<figure><img src="${x.ph}" alt=""><br>${x.d}</figure>`).join("")}</div></section>`:""}`}
+function SR(v){res=v;document.querySelectorAll(".rb2").forEach(e=>e.classList.toggle("sel",e.dataset.v==v))}
+function PF(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas"),s=360/im.width;c.width=360;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);PH=c.toDataURL("image/jpeg",.6);const p=$("#pv");p.src=PH;p.style.display="block"};im.src=r.result};r.readAsDataURL(f)}
+function M(){const w=+$("#mw").value;err="";
+ if(!(w>=35&&w<=250)||!res){err="מלא משקל תקין ובחר אם הצלחת באתגר.";return render()}
+ S.wi.push({d:dk(),w,ph:PH});S.p.w=w;S.p.wk=Math.max(4,S.p.wk-4);S.c=calc(S.p);
+ msg=res=="y"?`כל הכבוד. האתגר הבא נפתח: ${CH[(S.ci+1)%CH.length]}. יעד הקלוריות החדש שלך: ${S.c.target}.`:`לא הצלחת הפעם, אז האתגר נשאר עוד חודש. יעד הקלוריות מעודכן: ${S.c.target}. עכשיו מתאמנים חכם יותר.`;
+ if(res=="y"){S.ci++;S.cb=0}S.cyc=dk();res=null;PH=null;try{save()}catch(e){toast("התמונה גדולה מדי לשמירה")}render()}
+if(S&&!(S.p&&S.p.gt&&S.v2))S=null;
+if(S){GAP=Math.max(0,dn(dk())-dn(S.last||dk()));S.last=dk();save()}
+render();
+</script>
+</body>
+</html>
